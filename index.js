@@ -18,7 +18,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/farmStand', {useNewUrlParser: true,u
 
 
 
-
+const categories = ["fruits", "vegetable", "dairy"];
 
 
 app.set("views", path.join(__dirname, "views"));
@@ -31,7 +31,7 @@ app.get("/products", async (req,res)=>{
     res.render("products/index", {products})
 })
 app.get("/products/new", (req,res)=>{
-    res.render("products/new")
+    res.render("products/new", {categories})
 })
 
 

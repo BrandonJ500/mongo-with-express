@@ -15,11 +15,12 @@
         <input type="text" id="price" name="price" placeholder="product price" value="<%= product.price %>">
         <label for="category">Select Category</label>
         <select name="category" id="category">
-            <option value="fruit">fruit</option>
+            <option value="fruit" >fruit</option>
             <option value="vegetable">vegetable</option>
             <option value="dairy">dairy</option>
         </select>
         <button>Submit</button>
     </form>
 </body>
+<a href="/products/<%=product._id %>">Back to Product</a>
 </html>
