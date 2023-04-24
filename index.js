@@ -18,7 +18,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/farmStand', { useNewUrlParser: true,
 
 
 
-const categories = ["fruits", "vegetable", "dairy"];
+const categories = ["fruit", "vegetable", "dairy"];
 
 
 app.set("views", path.join(__dirname, "views"));
@@ -26,7 +26,7 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride("_method"));
 
-function wrapAsyc(fn){
+function wrapAsync(fn){
     return function(req,res, next){
         fn(req,res,next).catch(e=>next(e));
     }
@@ -58,7 +58,7 @@ app.post("/products", wrapAsync(async (req, res, next) => {
 }))
 
 
-app.get("/products/:id", wrapAsyc( async (req, res, next) => {
+app.get("/products/:id", wrapAsync( async (req, res, next) => {
 
     const { id } = req.params;
     const product = await Product.findById(id);
@@ -78,12 +78,12 @@ app.get("/products/:id/edit", wrapAsync(async (req, res, next) => {
         res.render("products/edit", { product, categories })
 }))
 
-app.put("/products/:id", wrapAsync(wrapAsync(async (req, res, next) => {
+app.put("/products/:id", wrapAsync(async (req, res, next) => {
         const { id } = req.params
         const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
         res.redirect(`/products/${product._id}`)
 
-})))
+}))
 
 app.delete("/products/:id", wrapAsync(async (req, res, next) => {
     const { id } = req.params;
@@ -92,6 +92,16 @@ app.delete("/products/:id", wrapAsync(async (req, res, next) => {
     productDelete;
     res.redirect("/products")
 }))
+
+const handleValidationError = err => {
+    console.dir(err);
+    return err;
+}
+
+app.use((err, req, res, next) => {
+   if(err.name === "ValidationError") err = handleValidationError(err);
+    next(err)
+})
 
 app.use((err, req, res, next) => {
     const { status = 500, message = "something went wrong" } = err;
